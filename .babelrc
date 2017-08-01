@@ -1,0 +1,14 @@
+{
+  "presets": [
+      ["env", {
+        "targets": {
+            "chrome": 60,
+            "node": "current"
+        }
+    }],
+    ["es2015", { "modules": false}],"react", "stage-2"],
+  "plugins": [["transform-runtime", {
+    "polyfill": false,
+    "regenerator": true
+  }]]
+}
