@@ -4,8 +4,7 @@
   "description": "Simply user management",
   "main": "index.js",
   "scripts": {
-    "start": "node server/server.js",
-    "dev": "./node_modules/webpack/bin/webpack.js",
+    "start": "node server/server.js & ./node_modules/webpack/bin/webpack.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -38,7 +37,7 @@
     "react-redux": "^5.0.5",
     "react-router": "^4.1.2",
     "react-router-dom": "^4.1.2",
-    "react-router-redux": "^4.0.8",
+    "react-router-redux": "^5.0.0-alpha.6",
     "readable-stream": "^2.3.3",
     "redux": "^3.7.2",
     "redux-observable": "^0.14.1",
