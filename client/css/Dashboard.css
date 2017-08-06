@@ -1,0 +1,17 @@
+.thumbnail{        
+    width : 350px;
+    height: 500px;
+}
+
+.thumbnail img{
+    width: 250px;
+    height: 250px;
+}
+
+.caption{
+    text-align: center;
+}
+
+.caption h3, .caption p{
+    cursor: pointer;
+}

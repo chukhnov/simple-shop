@@ -26,11 +26,11 @@ export function checkAuth (req, res, next) {
 
 }
 
-export function generateToken(someData) {
+export function generateToken(userData) {
     const {secret} = config.jwt;
     const date = new Date;
 
-    return jwt.sign(someData, secret, {
+    return jwt.sign(userData, secret, {
         expiresIn: date.setDate(date.getDate() + 30)
     });
 }

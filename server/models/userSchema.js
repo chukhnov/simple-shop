@@ -4,8 +4,8 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
     _id: String,
-    name: String,
-    age: Number,
+    name: {type: String},
+    age: {type: Number, default: 0},
     password: String,
     isAdmin: {type: Boolean, default: false},
     isActive: {type: Boolean, default: true},
