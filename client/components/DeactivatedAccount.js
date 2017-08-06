@@ -6,14 +6,11 @@ import {
     Thumbnail,
     Col,
     Tooltip,
-    OverlayTrigger,
-    Jumbotron
+    OverlayTrigger
 } from 'react-bootstrap'
-import no_avatar from '../images/noavatar.jpg'
-import '../css/Dashboard.css'
 
 
-class UserBoard extends Component {
+class DeactivatedAccount extends Component {
 
 
     render() {
@@ -25,49 +22,33 @@ class UserBoard extends Component {
             showEditModal,
             showImageUploadModal,
             isAdmin,
-            showSuperUserBoard,
-            isAccountDisabled
+            showSuperUserBoard
          } = this.props
         const tooltipEdit = (<Tooltip id="dashboard-tooltip">{'Click to edit'}</Tooltip>);
 
         return (
-            <div>
-            {isAccountDisabled ? <Jumbotron className="centered">
-                <h1>OOPS!</h1>
-                <p>Your account has been disabled.</p>
-                <p>
-                    <Button
-                        bsStyle="default"
-                        onClick={onLogOutClick.bind(null)}
-                        bsSize="small"
-                    >
-                        Go Back
-                    </Button>
-                </p>
-            </Jumbotron>
-             :
             <Grid>
                 <Row>
                     <Col smOffset={4} sm={5}>
                         <Thumbnail src={avatar || no_avatar}>
                             <Button
-                                bsStyle="default"
-                                bsSize="xsmall"
-                                onClick={showImageUploadModal.bind(null, true)}
-                            >
-                                Upload new image
+                                    bsStyle="default"
+                                    bsSize="xsmall"
+                                    onClick={showImageUploadModal.bind(null, true)}
+                                >
+                                    Upload new image
                                 </Button>
                             <OverlayTrigger
                                 overlay={tooltipEdit}
                                 placement="top"
                             >
-                                <h3 onClick={showEditModal.bind(null, { show: true, message: 'name' })}>{name}</h3>
+                                <h3 onClick={showEditModal.bind(null, {show: true, message: 'name'})}>{name}</h3>
                             </OverlayTrigger>
                             <OverlayTrigger
                                 overlay={tooltipEdit}
                                 placement="top"
                             >
-                                <p onClick={showEditModal.bind(null, { show: true, message: 'age' })}>Age: {age}</p>
+                                <p onClick={showEditModal.bind(null, {show: true, message:'age'})}>Age: {age}</p>
                             </OverlayTrigger>
                             <p>
                                 &nbsp;
@@ -92,10 +73,9 @@ class UserBoard extends Component {
                         </Thumbnail>
                     </Col>
                 </Row>
-            </Grid>}
-            </div>
+            </Grid>
         )
     }
 }
 
-export default UserBoard
+export default DeactivatedAccount

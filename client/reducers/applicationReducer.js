@@ -7,7 +7,9 @@ import {
     UPDATE_USER_DATA,
     SAVE_USER_DATA,
     IMAGE_UPLOAD_MODAL,
-    DATA_LOADED
+    DATA_LOADED,
+    SHOW_SUPER_USER_BOARD,
+    ERASE_USER_DATA
 } from '../common/constants'
 
 const initialState = {
@@ -25,7 +27,11 @@ const initialState = {
     editModalEditedField: null,
     showEditModal: false,
     showUploadImageModal: false,
-    avatarForUpload: null
+    avatarForUpload: null,
+    users: [],
+    isAdmin: false,
+    isShowSuperUserBoard: false,
+    isAccountDisabled: false
 };
 
 export default function applicationReducer(state = initialState, action) {
@@ -89,6 +95,18 @@ export default function applicationReducer(state = initialState, action) {
             return {
                 ...state,
                 dataIsLoaded: payload
+            }
+        }
+        case SHOW_SUPER_USER_BOARD: {
+            return {
+                ...state,
+                isShowSuperUserBoard: payload
+            }
+        }
+        case ERASE_USER_DATA: {
+            return {
+                ...state,
+                ...initialState
             }
         }
         default:

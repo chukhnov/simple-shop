@@ -13,7 +13,9 @@ import {
     SIGN_OUT,
     UPLOAD_AVATAR,
     IMAGE_UPLOAD_MODAL,
-    DATA_LOADED
+    DATA_LOADED,
+    CHANGE_USER_STATUS,
+    ERASE_USER_DATA
 } from '../../common/constants'
 import { combineEpics } from 'redux-observable'
 import { createAction } from '../../utils/createAction'
@@ -107,11 +109,10 @@ const checkToken = (action$, storeAPI$) => action$.ofType(CHECK_TOKEN)
                         const isDashboard = action.payload
                         const arrayOfActions = [createAction(ERASE_FORM_DATA)()]
                         if (responseSuccess) {
-                            const { name, age, avatar, uId } = response
                             if (!isDashboard) {
                                 storeAPI$.dispatch(push('dashboard'))
                             }
-                            arrayOfActions.push(createAction(USER_DATA_LOAD)({ name, age, avatar, uId }))
+                            arrayOfActions.push(createAction(USER_DATA_LOAD)(response))
                             return arrayOfActions
                         }
 
@@ -150,11 +151,8 @@ const saveUserData = (action$, storeAPI$) => action$.ofType(SAVE_USER_DATA)
                 const responseSuccess = response.status === 200
                 return Observable.from(response.json().then(data => data))
                     .mergeMap(response => {
-                        const arrayOfActions = []
                         if (responseSuccess) {
-                            const { name, age, avatar, uId } = response
-                            arrayOfActions.push(createAction(USER_DATA_LOAD)({ name, age, avatar, uId }))
-                            return arrayOfActions
+                            return [createAction(USER_DATA_LOAD)(response)]
                         }
 
                         const { message } = response
@@ -162,17 +160,16 @@ const saveUserData = (action$, storeAPI$) => action$.ofType(SAVE_USER_DATA)
                             show: true,
                             message
                         }
-                        arrayOfActions.push(createAction(SHOW_INFO_MODAL)(modalData))
-                        return arrayOfActions
+                        return [createAction(SHOW_INFO_MODAL)(modalData)]
                     })
             })
     })
 
 const signOut = (action$, storeAPI$) => action$.ofType(SIGN_OUT)
-    .map(() => {
+    .mergeMap(() => {
         localStorage.clear()
         storeAPI$.dispatch(push('/'))
-        return createAction(ERASE_FORM_DATA)()
+        return [createAction(ERASE_FORM_DATA)(), createAction(ERASE_USER_DATA)()]
     })
 
 const uploadAvatar = (action$, storeAPI$) => action$.ofType(UPLOAD_AVATAR)
@@ -182,9 +179,40 @@ const uploadAvatar = (action$, storeAPI$) => action$.ofType(UPLOAD_AVATAR)
     })
 
 const dataIsLoaded = (action$, storeAPI$) => action$.ofType(USER_DATA_LOAD)
-    .map(()=> createAction(DATA_LOADED)(true))
+    .map(() => createAction(DATA_LOADED)(true))
 
 
+
+const changeUserStatus = (action$, storeAPI$) => action$.ofType(CHANGE_USER_STATUS)
+    .mergeMap(action => {
+        const token = localStorage.getItem('jwtToken')
+        const { _id, status } = action.payload
+
+        return Observable.from(fetch(`api/1/users/activation`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ token, _id, status })
+        }).then(response => response))
+            .mergeMap(response => {
+                const responseSuccess = response.status === 200
+                return Observable.from(response.json().then(data => data))
+                    .mergeMap(response => {
+                        if (responseSuccess) {
+                            return [createAction(USER_DATA_LOAD)(response)]
+                        }
+
+                        const { message } = response
+                        const modalData = {
+                            show: true,
+                            message
+                        }
+                        return [createAction(SHOW_INFO_MODAL)(modalData)]
+                    })
+            })
+    })
 
 export default combineEpics(
     signInEpic,
@@ -194,5 +222,6 @@ export default combineEpics(
     saveUserData,
     signOut,
     uploadAvatar,
-    dataIsLoaded
+    dataIsLoaded,
+    changeUserStatus
 )

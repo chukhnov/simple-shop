@@ -21,7 +21,9 @@ import {
     UPDATE_USER_DATA,
     SAVE_USER_DATA,
     IMAGE_UPLOAD_MODAL,
-    UPLOAD_AVATAR
+    UPLOAD_AVATAR,
+    SHOW_SUPER_USER_BOARD,
+    CHANGE_USER_STATUS
 } from '../common/constants'
 import UserBoard from './UserBoard'
 import SuperUserBoard from './SuperUserBoard'
@@ -53,7 +55,13 @@ class Dashboard extends Component {
             showImageUploadModal,
             uploadAvatar,
             avatarForUpload,
-            dataIsLoaded
+            dataIsLoaded,
+            isAdmin,
+            isShowSuperUserBoard,
+            showSuperUserBoard,
+            users,
+            changeUserStatus,
+            isAccountDisabled
          } = this.props
         return (
             <div>
@@ -71,13 +79,22 @@ class Dashboard extends Component {
                     temporaryName={temporaryName}
                     onChangeValue={onChangeValue}
                 />}
-                {dataIsLoaded && <UserBoard
+                {(dataIsLoaded && !isShowSuperUserBoard) && <UserBoard
                     onLogOutClick={onLogOutClick}
                     name={name}
                     age={age ? age : 'No information'}
                     avatar={avatar}
                     showEditModal={showEditModal}
                     showImageUploadModal={showImageUploadModal}
+                    isAdmin={isAdmin}
+                    showSuperUserBoard={showSuperUserBoard}
+                    isAccountDisabled={isAccountDisabled}
+                />}
+                {isShowSuperUserBoard && <SuperUserBoard
+                    users={users}
+                    showSuperUserBoard={showSuperUserBoard}
+                    onLogOutClick={onLogOutClick}
+                    changeUserStatus={changeUserStatus}
                 />}
             </div>
         )
@@ -95,7 +112,11 @@ export default connect((store) => {
         temporaryName: store.applicationReducer.temporaryName,
         isShowUploadImageModal: store.applicationReducer.showUploadImageModal,
         avatarForUpload: store.applicationReducer.avatarForUpload,
-        dataIsLoaded: store.applicationReducer.dataIsLoaded
+        dataIsLoaded: store.applicationReducer.dataIsLoaded,
+        isAdmin: store.applicationReducer.isAdmin,
+        isShowSuperUserBoard: store.applicationReducer.isShowSuperUserBoard,
+        users: store.applicationReducer.users,
+        isAccountDisabled: store.applicationReducer.isAccountDisabled
     }
 }, {
         onLogOutClick: createAction(SIGN_OUT),
@@ -104,5 +125,7 @@ export default connect((store) => {
         onChangeValue: createAction(UPDATE_USER_DATA),
         onClickSaveEditModal: createAction(SAVE_USER_DATA),
         showImageUploadModal: createAction(IMAGE_UPLOAD_MODAL),
-        uploadAvatar: createAction(UPLOAD_AVATAR)
+        uploadAvatar: createAction(UPLOAD_AVATAR),
+        showSuperUserBoard: createAction(SHOW_SUPER_USER_BOARD),
+        changeUserStatus: createAction(CHANGE_USER_STATUS)
     })(Dashboard)

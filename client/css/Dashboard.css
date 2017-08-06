@@ -15,3 +15,7 @@
 .caption h3, .caption p{
     cursor: pointer;
 }
+
+.centered{
+    text-align: center
+}

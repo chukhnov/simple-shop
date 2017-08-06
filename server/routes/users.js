@@ -4,6 +4,7 @@ import { generateToken, verifyToken } from './utils/'
 import bcrypt from 'bcrypt'
 import CryptoJS from 'crypto-js'
 import UsersCollection from '../models/userSchema'
+import SuperUserCollection from '../models/superUserSchema'
 import config from '../config'
 
 
@@ -14,16 +15,17 @@ export async function addSuperUser() {
     const currentPasswordHash = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
     const saltRounds = 10;
     const hashedPassword = bcrypt.hashSync(currentPasswordHash, saltRounds);
-
+    const _id = crypto.randomBytes(10).toString('hex')
     const userTemplate = {
-      _id: crypto.randomBytes(10).toString('hex'),
+      _id,
       name: 'SuperUser',
-      password: hashedPassword,
-      isAdmin: true
+      password: hashedPassword
     }
 
-    const newUser = new UsersCollection(userTemplate);
+    const newUser = await new UsersCollection(userTemplate)
+    const newSuperUser = await new SuperUserCollection({ _id })
     newUser.save()
+    newSuperUser.save()
   }
 }
 
@@ -38,7 +40,7 @@ export async function registerUser(req, res) {
   const userTemplate = {
     _id: crypto.randomBytes(10).toString('hex'),
     name,
-    password: hashedPassword,
+    password: hashedPassword
   }
 
 
@@ -59,12 +61,9 @@ export async function login(req, res) {
     return res.status(401).send({ message: 'User not found!' })
   }
 
-  const { _id } = user
+  const { _id, isAdmin } = user
 
-  const { isActive, password: databasePasswordHash, _id: uId } = user
-  if (!isActive) {
-    return res.status(401).send({ message: 'User is not active!' });
-  }
+  const { password: databasePasswordHash, _id: uId } = user
 
   const currentPasswordHash = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
   const isCompare = bcrypt.compareSync(currentPasswordHash, databasePasswordHash);
@@ -72,7 +71,8 @@ export async function login(req, res) {
     return res.status(401).send({ message: 'Wrong password!' });
   }
 
-  const userData = { isAdmin: false, _id }
+  const superUser = await SuperUserCollection.findOne({ _id })
+  const userData = { isAdmin: !!superUser, _id }
   const token = generateToken(userData)
   res.status(200).send({ uId, name, token })
 
@@ -88,13 +88,14 @@ export async function checkToken(req, res) {
 
   verifyToken(token)
     .then(async function (data) {
-      const { _id } = data
+      const { _id, isAdmin } = data
       const user = await UsersCollection.findOne({ _id })
       if (!user) {
         return res.status(401).send({ message: 'User not found!' });
       }
-      const { name, avatar, age } = user
-      res.status(200).send({ name, avatar, age, uId: _id })
+      const { name, avatar, age, isActive } = user
+      const allUsers = await UsersCollection.find({ name: { $ne: "SuperUser" } }, { name: 1, avatar: 1, isActive: 1 })
+      res.status(200).send({ name, avatar, age, uId: _id, users: isAdmin ? allUsers : [], isAdmin, isAccountDisabled: !isActive })
     }, error => {
       res.status(401).send({ message: error });
     })
@@ -130,6 +131,34 @@ export async function updateUserData(req, res) {
 }
 
 
+export async function userActivation(req, res) {
+  const { token, _id: userId, status } = req.body
+  if (!token) {
+    return res.status(401).send({ message: 'Must pass token.!' });
+  }
+
+  verifyToken(token)
+    .then(async function (data) {
+      const { _id: superUserId } = data
+      const superUser = await SuperUserCollection.findOne({ _id: superUserId })
+      if (!superUser) {
+        return res.status(403).send({ message: 'No permission!' })
+      }
+      const user = await UsersCollection.findOne({ _id: userId })
+      if (!user) {
+        return res.status(401).send({ message: 'User not found!' });
+      }
+
+      const { nModified } = await UsersCollection.update({ _id: userId }, { $set: { isActive: status } }, { upsert: true });
+      if (!nModified) return res.status(400).send({ message: 'Cannot update user!' });
+
+      const allUsers = await UsersCollection.find({ name: { $ne: "SuperUser" } }, { name: 1, avatar: 1, isActive: 1 })
+
+      res.status(200).send({ users: allUsers })
+    }, error => {
+      res.status(401).send({ message: error });
+    })
+}
 
 
 export const routes = express();
@@ -137,3 +166,4 @@ routes.post('/registration', registerUser);
 routes.post('/', login);
 routes.get('/check/:token', checkToken);
 routes.put('/', updateUserData)
+routes.put('/activation', userActivation)
