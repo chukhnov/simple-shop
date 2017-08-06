@@ -68,7 +68,7 @@ class LoginForm extends Component {
                     <Col smOffset={4} sm={3}>
                         <Button
                             onClick={onLoginClick.bind(null)}
-                            bsStyle="primary"
+                            bsStyle="default"
                             bsSize="small"
                             block
                         >

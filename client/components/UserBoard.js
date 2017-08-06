@@ -32,7 +32,8 @@ class UserBoard extends Component {
             name,
             age,
             avatar,
-            showEditModal
+            showEditModal,
+            showImageUploadModal
          } = this.props
         const tooltipEdit = (<Tooltip id="dashboard-tooltip">{'Click to edit'}</Tooltip>);
 
@@ -40,7 +41,14 @@ class UserBoard extends Component {
             <Grid>
                 <Row>
                     <Col smOffset={4} sm={5}>
-                        <Thumbnail src={no_avatar}>
+                        <Thumbnail src={avatar || no_avatar}>
+                            <Button
+                                    bsStyle="default"
+                                    bsSize="xsmall"
+                                    onClick={showImageUploadModal.bind(null, true)}
+                                >
+                                    Upload new image
+                                </Button>
                             <OverlayTrigger
                                 overlay={tooltipEdit}
                                 placement="top"

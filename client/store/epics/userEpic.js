@@ -10,7 +10,10 @@ import {
     CHECK_TOKEN,
     UPDATE_USER_DATA,
     SAVE_USER_DATA,
-    SIGN_OUT
+    SIGN_OUT,
+    UPLOAD_AVATAR,
+    IMAGE_UPLOAD_MODAL,
+    DATA_LOADED
 } from '../../common/constants'
 import { combineEpics } from 'redux-observable'
 import { createAction } from '../../utils/createAction'
@@ -166,10 +169,30 @@ const saveUserData = (action$, storeAPI$) => action$.ofType(SAVE_USER_DATA)
     })
 
 const signOut = (action$, storeAPI$) => action$.ofType(SIGN_OUT)
-    .map(()=> {
+    .map(() => {
         localStorage.clear()
         storeAPI$.dispatch(push('/'))
+        return createAction(ERASE_FORM_DATA)()
     })
 
+const uploadAvatar = (action$, storeAPI$) => action$.ofType(UPLOAD_AVATAR)
+    .mergeMap(() => {
+        const update = { avatar: storeAPI$.getState().applicationReducer.avatarForUpload }
+        return [createAction(IMAGE_UPLOAD_MODAL)(false), createAction(SAVE_USER_DATA)(update)]
+    })
 
-export default combineEpics(signInEpic, showSignUpFormEpic, signUpEpic, checkToken, saveUserData, signOut)
+const dataIsLoaded = (action$, storeAPI$) => action$.ofType(USER_DATA_LOAD)
+    .map(()=> createAction(DATA_LOADED)(true))
+
+
+
+export default combineEpics(
+    signInEpic,
+    showSignUpFormEpic,
+    signUpEpic,
+    checkToken,
+    saveUserData,
+    signOut,
+    uploadAvatar,
+    dataIsLoaded
+)

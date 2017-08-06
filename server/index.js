@@ -5,8 +5,8 @@ import {initDB} from './setup'
 import config from './config'
 
 export const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json({limit: '1mb'}));
+app.use(bodyParser.urlencoded({extended: false, limit: '1mb'}));
 app.use(express.static(__dirname + '/../public'));
 app.use(ApplicationRouter);
 app.listen(config.port, () => {

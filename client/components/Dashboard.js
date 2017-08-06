@@ -19,11 +19,14 @@ import {
     SIGN_OUT,
     SHOW_EDIT_MODAL,
     UPDATE_USER_DATA,
-    SAVE_USER_DATA
+    SAVE_USER_DATA,
+    IMAGE_UPLOAD_MODAL,
+    UPLOAD_AVATAR
 } from '../common/constants'
 import UserBoard from './UserBoard'
 import SuperUserBoard from './SuperUserBoard'
 import EditModal from './modals/EditModal'
+import ImageUploadModal from './modals/ImageUploadModal'
 
 
 class Dashboard extends Component {
@@ -45,10 +48,21 @@ class Dashboard extends Component {
             temporaryAge,
             temporaryName,
             onChangeValue,
-            onClickSaveEditModal
+            onClickSaveEditModal,
+            isShowUploadImageModal,
+            showImageUploadModal,
+            uploadAvatar,
+            avatarForUpload,
+            dataIsLoaded
          } = this.props
         return (
             <div>
+                {isShowUploadImageModal && <ImageUploadModal
+                    onChangeValue={onChangeValue}
+                    uploadAvatar={uploadAvatar}
+                    avatarForUpload={avatarForUpload}
+                    showImageUploadModal={showImageUploadModal}
+                />}
                 {isShowEditModal && <EditModal
                     onClickCloseEditModal={showEditModal}
                     onClickSaveEditModal={onClickSaveEditModal}
@@ -57,13 +71,14 @@ class Dashboard extends Component {
                     temporaryName={temporaryName}
                     onChangeValue={onChangeValue}
                 />}
-                <UserBoard
+                {dataIsLoaded && <UserBoard
                     onLogOutClick={onLogOutClick}
                     name={name}
                     age={age ? age : 'No information'}
                     avatar={avatar}
                     showEditModal={showEditModal}
-                />
+                    showImageUploadModal={showImageUploadModal}
+                />}
             </div>
         )
     }
@@ -77,12 +92,17 @@ export default connect((store) => {
         isShowEditModal: store.applicationReducer.showEditModal,
         editModalEditedField: store.applicationReducer.editModalEditedField,
         temporaryAge: store.applicationReducer.temporaryAge,
-        temporaryName: store.applicationReducer.temporaryName
+        temporaryName: store.applicationReducer.temporaryName,
+        isShowUploadImageModal: store.applicationReducer.showUploadImageModal,
+        avatarForUpload: store.applicationReducer.avatarForUpload,
+        dataIsLoaded: store.applicationReducer.dataIsLoaded
     }
 }, {
         onLogOutClick: createAction(SIGN_OUT),
         checkToken: createAction(CHECK_TOKEN),
         showEditModal: createAction(SHOW_EDIT_MODAL),
         onChangeValue: createAction(UPDATE_USER_DATA),
-        onClickSaveEditModal: createAction(SAVE_USER_DATA)
+        onClickSaveEditModal: createAction(SAVE_USER_DATA),
+        showImageUploadModal: createAction(IMAGE_UPLOAD_MODAL),
+        uploadAvatar: createAction(UPLOAD_AVATAR)
     })(Dashboard)

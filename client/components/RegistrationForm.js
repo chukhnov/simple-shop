@@ -63,7 +63,7 @@ class RegistrationForm extends Component {
                     <Col smOffset={4} sm={3}>
                         <Button
                             onClick={onSignUpClick.bind(null)}
-                            bsStyle="primary"
+                            bsStyle="default"
                             bsSize="small"
                             block
                         >

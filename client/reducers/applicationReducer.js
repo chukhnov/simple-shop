@@ -5,7 +5,9 @@ import {
     SHOW_INFO_MODAL,
     SHOW_EDIT_MODAL,
     UPDATE_USER_DATA,
-    SAVE_USER_DATA
+    SAVE_USER_DATA,
+    IMAGE_UPLOAD_MODAL,
+    DATA_LOADED
 } from '../common/constants'
 
 const initialState = {
@@ -13,6 +15,7 @@ const initialState = {
     showSignUpForm: false,
     showInformationModal: false,
     informationModalBody: null,
+    dataIsLoaded: false,
     uId: null,
     name: null,
     age: null,
@@ -20,7 +23,9 @@ const initialState = {
     temporaryAge: '',
     temporaryName: '',
     editModalEditedField: null,
-    showEditModal: false
+    showEditModal: false,
+    showUploadImageModal: false,
+    avatarForUpload: null
 };
 
 export default function applicationReducer(state = initialState, action) {
@@ -71,6 +76,19 @@ export default function applicationReducer(state = initialState, action) {
             return {
                 ...state,
                 showEditModal: false
+            }
+        }
+        case IMAGE_UPLOAD_MODAL: {
+            return {
+                ...state,
+                showUploadImageModal: payload,
+                avatarForUpload: null
+            }
+        }
+        case DATA_LOADED: {
+            return {
+                ...state,
+                dataIsLoaded: payload
             }
         }
         default:
