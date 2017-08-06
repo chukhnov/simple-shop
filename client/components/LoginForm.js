@@ -60,12 +60,6 @@ class LoginForm extends Component {
 
                 <FormGroup>
                     <Col smOffset={4} sm={3}>
-                        <Checkbox>Remember me</Checkbox>
-                    </Col>
-                </FormGroup>
-
-                <FormGroup>
-                    <Col smOffset={4} sm={3}>
                         <Button
                             onClick={onLoginClick.bind(null)}
                             bsStyle="default"

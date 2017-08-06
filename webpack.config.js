@@ -1,13 +1,18 @@
 const path = require('path');
+const webpack = require('webpack')
 
 module.exports = {
-    devtool: 'source-map',
     entry: path.resolve(__dirname, 'client/index.js'),
-    watch: true,
     output: {
         path: path.resolve(__dirname, 'public/build'),
         filename: 'bundle.js'
     },
+    plugins: [
+            new webpack.optimize.UglifyJsPlugin(),
+            new webpack.LoaderOptionsPlugin({
+                minimize: true
+            })
+        ],
     module: {
         rules: [
             {
@@ -21,9 +26,9 @@ module.exports = {
                 test: /\.css$/,
                 include: [path.resolve(__dirname, "client"), path.resolve(__dirname, "node_modules")],
                 use: [
-                        'style-loader',
-                        'css-loader',
-                        'postcss-loader'
+                    'style-loader',
+                    'css-loader',
+                    'postcss-loader'
                 ]
             },
             {

@@ -55,12 +55,6 @@ class RegistrationForm extends Component {
 
                 <FormGroup>
                     <Col smOffset={4} sm={3}>
-                        <Checkbox>Remember me</Checkbox>
-                    </Col>
-                </FormGroup>
-
-                <FormGroup>
-                    <Col smOffset={4} sm={3}>
                         <Button
                             onClick={onSignUpClick.bind(null)}
                             bsStyle="default"
