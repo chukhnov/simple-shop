@@ -1,38 +1,35 @@
 {
-  "name": "edit-users",
-  "version": "1.0.0",
-  "description": "Simply user management",
+  "name": "simple-shop",
+  "version": "0.0.1",
+  "description": "Shop example",
   "main": "index.js",
   "scripts": {
-    "start": "node server/server.js & ./node_modules/webpack/bin/webpack.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon -w server server/server.js & ./node_modules/webpack/bin/webpack.js",
+    "build": "NODE_ENV=production webpack -p --config ./webpack.prod.config.js",
+    "serve": "node server/server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chukhnov/edit-users.git"
+    "url": "git+https://github.com/chukhnov/simple-shop.git"
   },
   "author": "https://github.com/chukhnov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/chukhnov/edit-users/issues"
+    "url": "https://github.com/chukhnov/simple-shop/issues"
   },
-  "homepage": "https://github.com/chukhnov/edit-users#readme",
+  "homepage": "https://github.com/chukhnov/simple-shop#readme",
   "dependencies": {
-    "ajv": "^5.2.2",
-    "babel-loader": "^7.1.1",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.2",
     "crypto-js": "^3.1.9-1",
     "css-loader": "^0.28.4",
     "express": "^4.15.3",
-    "file-loader": "^0.11.2",
     "history": "^4.5.1",
     "jsonwebtoken": "^7.4.1",
     "mongoose": "^4.11.5",
     "nodemailer": "^4.0.1",
     "postcss-loader": "^2.0.6",
     "react": "^15.6.1",
-    "react-bootstrap": "^0.31.2",
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.5",
     "react-router": "^4.1.1",
@@ -41,17 +38,20 @@
     "readable-stream": "^2.3.3",
     "redux": "^3.7.2",
     "redux-observable": "^0.14.1",
-    "rxjs": "^5.4.2",
-    "style-loader": "^0.18.2",
-    "url-loader": "^0.5.9",
-    "webpack": "^3.4.1"
+    "rxjs": "^5.4.2"
   },
   "devDependencies": {
+    "babel-loader": "^7.1.1",
+    "file-loader": "^0.11.2",
+    "style-loader": "^0.18.2",
+    "url-loader": "^0.5.9",
+    "webpack": "^3.4.1",
     "babel-plugin-transform-runtime": "^6.22.0",
     "babel-preset-env": "^1.1.8",
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-react": "^6.22.0",
     "babel-preset-stage-2": "^6.22.0",
-    "babel-register": "^6.22.0"
+    "babel-register": "^6.22.0",
+    "nodemon": "^1.17.4"
   }
 }
