@@ -12,27 +12,25 @@ module.exports = {
 
         rules: [
             {
-                test: /\.jsx?/,
-                exclude: /node_modules/,
+                test: /\.jsx?$/,
+                exclude: [
+                    path.resolve(__dirname, "node_modules")
+                ],
                 loader: 'babel-loader'
             },
             {
                 test: /\.css$/,
-                include: [/client/, /node_modules/],
+                include: [path.resolve(__dirname, "client"), path.resolve(__dirname, "node_modules")],
                 use: [
-                        'style-loader',
-                        'css-loader',
-                        'postcss-loader'
+                    'style-loader',
+                    'css-loader',
+                    'postcss-loader'
                 ]
             },
             {
                 test: /\.(ttf|eot|svg|jpg|jpeg|png|JPG|woff|woff2|pdf)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                include: [/client/, /node_modules/],
-                use:[
-                    {
-                        loader: "file-loader?name=../[path][name].[ext]"
-                    }
-                ]
+                include: [path.resolve(__dirname, "client"), path.resolve(__dirname, "node_modules")],
+                loader: "file-loader?name=../[path][name].[ext]"
             }
         ]
     }
